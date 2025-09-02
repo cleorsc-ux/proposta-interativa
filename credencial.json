@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "proposta-interativa",
+  "private_key_id": "1a22780618c82e6bf7558766c0f1655c301aac13",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCnHnE+5sEP3+Gq\n/m8j/3fFFpq6l1kaOiZaUw+T0bY+i788jglEhMvDpkNMX8kvGBjI3SpXL2T0APE8\nXXYu4Vbqh26mqGjHa1rtnturPONjj8xr9lrrrjJLGgV9wd2tar85fj+2kSvL6O0j\nZx8JR6aINHMM14/zXduxvtEM8KlDBv3TS7Pe0Jz/6MnCWCNrZULJ353lcQ6Mzsuy\nOrB4x96sxQo0/tCLpcqXBbsx1X2LYQkJtSUJBrb/OVGVearK2kVLQNJN26h7/kxF\n9Ya3eCdkm62QZy3s5vOnXWbtENIky63SqQk8Ber5/1sDY2a1iWcOMhL7SPkvqopf\n1jC+K95XAgMBAAECggEANaTq+yL9RAg8mzPzHx4JJyW7Yzvj6SxTVVkmPe/qTSd0\nqo55YRozgkkjfyecH9bfVdLQnY3kHQMUbKkfn6rLyJrSpQKYJ7NJS89behsgbrwh\nBWLeCpsvH7ZpntWVP+5tFZp1/zeYVGsfe+bFKqhqR3x2ld+4IIm3VNYIqtuxqYbW\nycNv+XQuZ4pnqorD32ud1NYMwB+ETa5JIkl8HBWD0sg1SQ9QKnwXqetDl3cLjSXH\n2XRtjR8PjIn3PkEf/jY23GxFTtnhexFK/bEKU/l16EnfrWUECFqR6QZLDCDsjwqf\nzp2o+xYoEOfKy2QlVvegV3aIkxoAy56Mg3627ATJ8QKBgQDgG8pPvVkwMYpblvTi\nm7ozubo1GJWzfyDWXkvcp80RvQ4vnpOjSgY4/xG+2sT4pY9LA6hfXxdgtvTT31R2\nvc+V3yYxi5XxfI2d5sliHyVaMMVL5LL1XPfOhOdwjbFxgl4XulPIb5aDnjI1+W/S\nsDyJq26WtPpZfxo9hOwZR12IfwKBgQC+5ok4EWbHjdOdmuMoJ4wJcphWuiM7pItH\nYG9mjkkod9+L2cRZRjIbP+L6tnZGwqJ0FOrFkmq5EC+1gPyLJx4R01UUQPMemwlE\nmURb7WyQmo8VZFYZtZDOtw3trcDwwLbuUVCfItJMtSkJZphWipaOhGZ9PYzxUv3k\nlx4xw73+KQKBgHNpHFjQNBwDhzL/nIEOnWeB4Ajz7jQP5gM/cGXj7FGUQLf5PCK9\nPlMf2C2nUASUjiSdb5odyFZAIfjya/bybPLLhknBjqhb8jo83bywOXYm45Pf5OFC\nzUMHYoCuF5FTB83EYN05yhNh5o2xNQsVQzfKlxr5fGuWbxb7WvLxs5NVAoGBAJXl\nZ3HDGDUxRCzI5f0tsGPqu3u+BNRcS5DsRAz/RKqmFb42bFq9J7MF4zCB/TVqtyz3\nD7G7WlmeQBgBBEwvlwjgLDoPFde+XPSkdGzKbSjOc/OUKZdeXioyypkKiimA6SMQ\nboHGUeMxjNt41718bOPTSrakkfsb84h+sJLa5GChAoGBAM+TlxHr961GvE6hiHOL\nUPmS5bKZ+Jisy/9NUC+SecNnzPtrXS+OHIDE0NVpxuv7LKK+SZCxc70DMI9p0F53\nLaJhmydzDc2qW/L+wEjbIOQWs6lMSivPdftpu0YcjZqmYIktO0Em88eW7ti4JoSr\n2HbH1wotiV2K4zb66ocliRGu\n-----END PRIVATE KEY-----\n",
+  "client_email": "proposta-comercial@proposta-interativa.iam.gserviceaccount.com",
+  "client_id": "108188347859997357857",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/proposta-comercial%40proposta-interativa.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

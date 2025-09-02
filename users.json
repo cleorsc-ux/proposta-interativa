@@ -1,0 +1,14 @@
+[
+  {
+    "nome": "CLEO",
+    "usuario": "cleo",
+    "senha": "admin123",
+    "papel": "admin"
+  },
+  {
+    "nome": "Wagner",
+    "usuario": "socio",
+    "senha": "socio123",
+    "papel": "admin"
+  }
+]
