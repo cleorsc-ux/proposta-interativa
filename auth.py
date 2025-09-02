@@ -2,38 +2,38 @@ import streamlit as st
 import json
 import os
 
-USERS_FILE = "users.json"
+# Caminho do arquivo de usuários
+USUARIOS_PATH = "usuarios.json"
 
 def carregar_usuarios():
-    if not os.path.exists(USERS_FILE):
-        return []
-    with open(USERS_FILE, "r") as f:
-        return json.load(f)
+    if os.path.exists(USUARIOS_PATH):
+        with open(USUARIOS_PATH, "r") as f:
+            return json.load(f)
+    return []
 
-def autenticar_usuario():
-    if "usuario_autenticado" not in st.session_state:
-        st.session_state.usuario_autenticado = None
+def login():
+    if "usuario" not in st.session_state:
+        st.title("🔐 Login")
+        usuario = st.text_input("Usuário")
+        senha = st.text_input("Senha", type="password")
+        
+        if st.button("Entrar"):
+            usuarios = carregar_usuarios()
+            for user in usuarios:
+                if user["usuario"].lower() == usuario.lower() and user["senha"] == senha:
+                    st.session_state.usuario = user
+                    st.success("Login realizado com sucesso!")
+                    st.experimental_rerun()
+            st.error("Usuário ou senha inválidos.")
+            return False
+        
+        return False  # Se botão não foi clicado ainda
+    return True
 
-    if st.session_state.usuario_autenticado:
-        usuario = st.session_state.usuario_autenticado
-        st.sidebar.success(f"👤 {usuario['nome']} ({usuario['tipo']})")
-        if st.sidebar.button("🔒 Sair"):
-            st.session_state.usuario_autenticado = None
-            st.experimental_rerun()
-        return usuario
+def logout():
+    if st.sidebar.button("🔓 Sair"):
+        del st.session_state.usuario
+        st.experimental_rerun()
 
-    st.sidebar.title("🔐 Login de Usuário")
-    usuario_input = st.sidebar.text_input("Usuário")
-    senha_input = st.sidebar.text_input("Senha", type="password")
-
-    if st.sidebar.button("Entrar"):
-        usuarios = carregar_usuarios()
-        for user in usuarios:
-            if user["usuario"] == usuario_input and user["senha"] == senha_input:
-                st.session_state.usuario_autenticado = user
-                st.success("Login realizado com sucesso!")
-                st.experimental_rerun()
-                return user
-        st.error("Usuário ou senha inválidos.")
-
-    return None
+def usuario_logado():
+    return st.session_state.usuario
