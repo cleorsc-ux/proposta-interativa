@@ -2,7 +2,7 @@
 
 import streamlit as st
 import pandas as pd
-from auth import login, logout, usuario_logado
+from auth import autenticar_usuario
 from sheets import carregar_catalogo, salvar_proposta_em_sheets
 from pdf import gerar_pdf
 from config import CAMPOS_EXTRAS
