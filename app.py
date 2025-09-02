@@ -1,19 +1,30 @@
 import streamlit as st
-from auth import autenticar_usuario
 
-st.set_page_config(
-    page_title="Ártico PRIME - Propostas",
-    page_icon="📄",
-    layout="wide"
-)
+# Base de dados fictícia de usuários
+usuarios = {
+    "admin": {"senha": "1234", "nome": "Administrador"},
+    "engenheiro": {"senha": "obras123", "nome": "Engenheiro João"},
+    "arquiteta": {"senha": "design456", "nome": "Arquiteta Maria"}
+}
 
-# Autenticação multiusuário
-usuario = autenticar_usuario()
+def autenticar_usuario():
+    if "autenticado" not in st.session_state:
+        st.session_state.autenticado = False
 
-# Se logado, continua o sistema
-if usuario:
-    st.sidebar.success(f"Bem-vindo(a), {usuario['nome']} 👷‍♀️")
-    
-    # Aqui futuramente entra a lógica da proposta
-    st.title("📄 Sistema de Propostas Interativas - Ártico PRIME")
-    st.write("Este sistema está em desenvolvimento. Em breve você poderá gerar propostas personalizadas para sua construtora.")
+    if not st.session_state.autenticado:
+        st.sidebar.title("🔐 Login")
+        usuario_input = st.sidebar.text_input("Usuário")
+        senha_input = st.sidebar.text_input("Senha", type="password")
+        botao_login = st.sidebar.button("Entrar")
+
+        if botao_login:
+            if usuario_input in usuarios and usuarios[usuario_input]["senha"] == senha_input:
+                st.session_state.autenticado = True
+                st.session_state.usuario = usuarios[usuario_input]
+                st.success("Login realizado com sucesso.")
+                st.rerun()
+            else:
+                st.sidebar.error("Usuário ou senha incorretos.")
+        return None
+    else:
+        return st.session_state.usuario
