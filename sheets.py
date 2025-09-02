@@ -5,16 +5,18 @@ import gspread
 import pandas as pd  # ← Faltando no seu código
 from google.oauth2.service_account import Credentials
 
-from config import ABA_CATALOGO, ABA_PROPOSTAS  # ← Importe se estiver usando essas constantes em outro lugar
+from config import NOME_PLANILHA_CATALOGO  # certifique-se de importar
 
-NOME_PLANILHA_CATALOGO = "Nome da sua planilha"  # Atualize com o nome exato da planilha
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 
 def conectar_sheets():
     credentials_dict = st.secrets["google_sheets_credentials"]
-    credentials = Credentials.from_service_account_info(credentials_dict)
+    credentials = Credentials.from_service_account_info(credentials_dict, scopes=SCOPES)
     client = gspread.authorize(credentials)
     return client.open(NOME_PLANILHA_CATALOGO)
-
 def carregar_catalogo():
     planilha = conectar_sheets()
     aba = planilha.worksheet(ABA_CATALOGO)
