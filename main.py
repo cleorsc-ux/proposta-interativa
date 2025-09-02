@@ -2,10 +2,11 @@
 
 import streamlit as st
 import pandas as pd
-from auth import autenticar_usuario
+from auth import login, logout, usuario_logado
 from sheets import carregar_catalogo, salvar_proposta_em_sheets
 from pdf import gerar_pdf
 from config import CAMPOS_EXTRAS
+
 
 st.set_page_config(page_title="Proposta Interativa - Ártico PRIME", layout="wide")
 
