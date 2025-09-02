@@ -15,7 +15,7 @@ LOGO_PATH = "logo.png"
 NOME_PLANILHA_CATALOGO = "CATÁLOGO DE SERVIÇOS- Ártico PRIME"
 
 # Nome da aba da planilha com o catálogo
-ABA_CATALOGO = "Serviços"
+ABA_CATALOGO = "CATÁLOGO_PRINCIPAL"
 
 # Nome da aba de propostas geradas (historico)
 ABA_PROPOSTAS = "Propostas"
