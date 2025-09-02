@@ -1,15 +1,17 @@
 # sheets.py
 
+import streamlit as st
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-import pandas as pd
-from config import NOME_PLANILHA_CATALOGO, ABA_CATALOGO, ABA_PROPOSTAS
+import pandas as pd  # ← Faltando no seu código
+from google.oauth2.service_account import Credentials
 
-SCOPES = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-CRED_FILE = "credencial.json"
+from config import ABA_CATALOGO, ABA_PROPOSTAS  # ← Importe se estiver usando essas constantes em outro lugar
+
+NOME_PLANILHA_CATALOGO = "Nome da sua planilha"  # Atualize com o nome exato da planilha
 
 def conectar_sheets():
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(CRED_FILE, SCOPES)
+    credentials_dict = st.secrets["google_sheets_credentials"]
+    credentials = Credentials.from_service_account_info(credentials_dict)
     client = gspread.authorize(credentials)
     return client.open(NOME_PLANILHA_CATALOGO)
 
