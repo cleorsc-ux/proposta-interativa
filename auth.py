@@ -23,7 +23,7 @@ def login():
                 if user["usuario"].lower() == usuario.lower() and user["senha"] == senha:
                     st.session_state.usuario = user
                     st.success("Login realizado com sucesso!")
-                    st.experimental_rerun()
+                    st.rerun()
             st.error("Usuário ou senha inválidos.")
             return False
         
