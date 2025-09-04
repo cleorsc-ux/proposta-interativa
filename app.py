@@ -1,5 +1,5 @@
 import streamlit as st
-from gerar_pdf import gerar_pdf
+from pdf import gerar_pdf  ✅
 
 # Base de dados fictícia de usuários
 usuarios = {
