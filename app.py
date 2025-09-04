@@ -34,12 +34,10 @@ def autenticar_usuario():
 # Chamar autenticação
 usuario = autenticar_usuario()
 
-# Se logado com sucesso
+usuario = autenticar_usuario()
 if usuario:
-    st.title("📄 Sistema de Propostas")
-    st.write(f"Bem-vindo, {usuario['nome']}!")
+    st.title("🧾 Sistema de Propostas Interativas")
 
-    # Dados simulados (depois serão do formulário)
     dados_proposta = {
         "cliente": "Construtora Exemplo",
         "projeto": "Edifício Residencial",
@@ -48,7 +46,8 @@ if usuario:
         "prazo": 60
     }
 
-    if st.button("Gerar PDF da proposta"):
-        caminho = gerar_pdf(dados_proposta, usuario['nome'])  # agora pega o nome do usuário logado
+    if st.button("📄 Gerar PDF da proposta"):
+        caminho = gerar_pdf(dados_proposta, usuario)
         with open(caminho, "rb") as f:
-            st.download_button("📥 Baixar PDF", data=f, file_name="proposta.pdf")
+            st.download_button("📥 Baixar PDF", data=f, file_name="proposta.pdf", mime="application/pdf")
+
