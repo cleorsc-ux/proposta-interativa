@@ -1,20 +1,5 @@
-from gerar_pdf import gerar_pdf
 import streamlit as st
-
-# Simulação (depois esses dados virão de um formulário)
-dados_proposta = {
-    "cliente": "Construtora Exemplo",
-    "projeto": "Edifício Residencial",
-    "servicos": "Fundação, Estrutura, Acabamento",
-    "valor_total": 125000.00,
-    "prazo": 60
-}
-
-if st.button("Gerar PDF da proposta"):
-    caminho = gerar_pdf(dados_proposta, usuario)
-    with open(caminho, "rb") as f:
-        st.download_button("📥 Baixar PDF", data=f, file_name="proposta.pdf")
-
+from gerar_pdf import gerar_pdf
 
 # Base de dados fictícia de usuários
 usuarios = {
@@ -23,6 +8,7 @@ usuarios = {
     "arquiteta": {"senha": "design456", "nome": "Arquiteta Maria"}
 }
 
+# Função de autenticação
 def autenticar_usuario():
     if "autenticado" not in st.session_state:
         st.session_state.autenticado = False
@@ -44,3 +30,25 @@ def autenticar_usuario():
         return None
     else:
         return st.session_state.usuario
+
+# Chamar autenticação
+usuario = autenticar_usuario()
+
+# Se logado com sucesso
+if usuario:
+    st.title("📄 Sistema de Propostas")
+    st.write(f"Bem-vindo, {usuario['nome']}!")
+
+    # Dados simulados (depois serão do formulário)
+    dados_proposta = {
+        "cliente": "Construtora Exemplo",
+        "projeto": "Edifício Residencial",
+        "servicos": "Fundação, Estrutura, Acabamento",
+        "valor_total": 125000.00,
+        "prazo": 60
+    }
+
+    if st.button("Gerar PDF da proposta"):
+        caminho = gerar_pdf(dados_proposta, usuario['nome'])  # agora pega o nome do usuário logado
+        with open(caminho, "rb") as f:
+            st.download_button("📥 Baixar PDF", data=f, file_name="proposta.pdf")
