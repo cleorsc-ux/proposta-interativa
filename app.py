@@ -1,4 +1,20 @@
+from gerar_pdf import gerar_pdf
 import streamlit as st
+
+# Simulação (depois esses dados virão de um formulário)
+dados_proposta = {
+    "cliente": "Construtora Exemplo",
+    "projeto": "Edifício Residencial",
+    "servicos": "Fundação, Estrutura, Acabamento",
+    "valor_total": 125000.00,
+    "prazo": 60
+}
+
+if st.button("Gerar PDF da proposta"):
+    caminho = gerar_pdf(dados_proposta, usuario)
+    with open(caminho, "rb") as f:
+        st.download_button("📥 Baixar PDF", data=f, file_name="proposta.pdf")
+
 
 # Base de dados fictícia de usuários
 usuarios = {
