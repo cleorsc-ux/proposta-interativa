@@ -1,3 +1,5 @@
+# gerar_pdf.py
+
 from fpdf import FPDF
 from datetime import datetime
 import os
@@ -49,12 +51,25 @@ class PropostaPDF(FPDF):
         self.set_font("Arial", "", 10)
         self.multi_cell(0, 10, "Observações: Esta proposta está sujeita a alterações conforme avaliação técnica da obra.")
 
-        # Garante que a pasta pdfs/ existe
-os.makedirs("pdfs", exist_ok=True)
+        self.output(nome_arquivo)
 
-# Caminho completo para salvar o arquivo
-output_path = os.path.join("pdfs", nome_arquivo)
+# Função externa para usar no app
+def gerar_pdf(dados_proposta, usuario):
+    empresa = dados_proposta["cliente"]
+    servicos_raw = dados_proposta["servicos"].split(", ")
+    total = dados_proposta["valor_total"]
 
-# Salva o PDF na pasta
-self.output(output_path)
+    servicos = []
+    for servico in servicos_raw:
+        servicos.append({
+            "nome": servico,
+            "unidade": "UND",
+            "quantidade": 1,
+            "valor_unitario": total / len(servicos_raw),
+            "subtotal": total / len(servicos_raw)
+        })
 
+    pdf = PropostaPDF(usuario_nome=usuario["nome"], empresa_nome=empresa, logotipo_path="assets/logo.png")
+    nome_arquivo = f"pdfs/proposta_{empresa.lower().replace(' ', '_')}.pdf"
+    pdf.gerar_proposta(servicos, total, nome_arquivo)
+    return nome_arquivo
