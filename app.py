@@ -31,13 +31,16 @@ def autenticar_usuario():
     else:
         return st.session_state.usuario
 
-# Chamar autenticação
+# 🟡 ❌ Remover essa linha duplicada:
+# usuario = autenticar_usuario()
+
+# ✅ Correta:
 usuario = autenticar_usuario()
 
-usuario = autenticar_usuario()
 if usuario:
     st.title("🧾 Sistema de Propostas Interativas")
 
+    # Simulação de dados fixos (depois será via formulário)
     dados_proposta = {
         "cliente": "Construtora Exemplo",
         "projeto": "Edifício Residencial",
@@ -50,4 +53,3 @@ if usuario:
         caminho = gerar_pdf(dados_proposta, usuario)
         with open(caminho, "rb") as f:
             st.download_button("📥 Baixar PDF", data=f, file_name="proposta.pdf", mime="application/pdf")
-
