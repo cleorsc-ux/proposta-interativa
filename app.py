@@ -1,12 +1,8 @@
 import streamlit as st
 from pdf import gerar_pdf
 
-# Base de dados fictícia de usuários
-usuarios = {
-    "admin": {"senha": "1234", "nome": "Administrador"},
-    "engenheiro": {"senha": "obras123", "nome": "Engenheiro João"},
-    "arquiteta": {"senha": "design456", "nome": "Arquiteta Maria"}
-}
+# ✅ Lê os usuários do arquivo secrets.toml
+usuarios = {u["nome"]: {"senha": u["senha"], "nome": u["nome"]} for u in st.secrets["auth"]["usuarios"]}
 
 # Função de autenticação
 def autenticar_usuario():
@@ -31,11 +27,9 @@ def autenticar_usuario():
     else:
         return st.session_state.usuario
 
-# 🟡 ❌ Remover essa linha duplicada:
-# usuario = autenticar_usuario()
-
-# ✅ Correta:
+# ✅ Chama a função
 usuario = autenticar_usuario()
+
 
 if usuario:
     st.title("🧾 Sistema de Propostas Interativas")
