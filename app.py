@@ -44,6 +44,6 @@ if usuario:
     }
 
     if st.button("📄 Gerar PDF da proposta"):
-        caminho = gerar_pdf(dados_proposta, usuario)
+        caminho = gerar_pdf(dados_proposta, usuario["nome"])
         with open(caminho, "rb") as f:
             st.download_button("📥 Baixar PDF", data=f, file_name="proposta.pdf", mime="application/pdf")
