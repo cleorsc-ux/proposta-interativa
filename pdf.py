@@ -72,7 +72,8 @@ def gerar_pdf(dados_proposta, usuario):
             "subtotal": total / len(servicos_raw)
         })
 
-    nome_arquivo = f"pdfs/proposta_{empresa.lower().replace(' ', '_')}.pdf"
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    nome_arquivo = f"pdfs/proposta_{empresa.lower().replace(' ', '_')}_{timestamp}.pdf"
     pdf = PropostaPDF(usuario_nome=usuario, empresa_nome=empresa, logotipo_path="assets/logo.png")
     pdf.gerar_proposta(servicos, total, nome_arquivo)
     return nome_arquivo
