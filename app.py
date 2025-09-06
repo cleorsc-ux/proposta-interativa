@@ -1,36 +1,43 @@
 import streamlit as st
 from pdf import gerar_pdf
 
-st.set_page_config(page_title="Proposta Interativa - Ártico PRIME", layout="centered")
-
+st.set_page_config(page_title="Gerar Proposta Comercial", layout="centered")
 st.title("📄 Gerar Proposta Comercial")
 
-with st.form("formulario_proposta"):
+with st.form("form_proposta"):
     st.subheader("Informações da Proposta")
-
     cliente = st.text_input("Cliente")
     projeto = st.text_input("Projeto")
-    servicos = st.text_area("Serviços (separados por vírgula)", help="Ex: Pintura, Impermeabilização, Manutenção")
-    valor_total = st.number_input("Valor Total da Proposta (R$)", min_value=0.0, step=100.0)
-    prazo = st.number_input("Prazo de Execução (dias)", min_value=1, step=1)
+    servicos = st.text_area("Serviços (separados por vírgula)")
+    valor_total = st.number_input("Valor Total da Proposta (R$)", min_value=0.0, step=100.0, format="%.2f")
+    prazo = st.text_input("Prazo de Execução")
+    garantias = st.text_input("Garantias")
+    observacoes = st.text_area("Observações Adicionais")
 
-    st.subheader("Responsável pela Proposta")
-    usuario_nome = st.text_input("Seu Nome")
+    st.subheader("Usuário Responsável")
+    usuario = st.text_input("Seu nome")
 
-    enviado = st.form_submit_button("Gerar Proposta 📤")
+    gerar = st.form_submit_button("Gerar Proposta")
 
-if enviado:
-    if not all([cliente, projeto, servicos, valor_total, prazo, usuario_nome]):
-        st.error("Por favor, preencha todos os campos.")
+if gerar:
+    if not cliente or not projeto or not servicos or valor_total == 0.0 or not usuario:
+        st.error("Por favor, preencha todos os campos obrigatórios.")
     else:
         dados = {
             "cliente": cliente,
             "projeto": projeto,
             "servicos": servicos,
             "valor_total": valor_total,
-            "prazo": prazo
+            "prazo": prazo,
+            "garantias": garantias,
+            "observacoes": observacoes
         }
-
-        caminho_pdf = gerar_pdf(dados_proposta=dados, usuario=usuario_nome)
+        caminho = gerar_pdf(dados, usuario)
         st.success("✅ Proposta gerada com sucesso!")
-        st.download_button("📥 Baixar Proposta PDF", data=open(caminho_pdf, "rb"), file_name=caminho_pdf.split("/")[-1])
+        with open(caminho, "rb") as f:
+            st.download_button(
+                label="📥 Baixar PDF",
+                data=f,
+                file_name=caminho.split("/")[-1],
+                mime="application/pdf"
+            )
