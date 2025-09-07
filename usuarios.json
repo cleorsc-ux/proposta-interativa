@@ -3,21 +3,18 @@
     "nome": "CLEO",
     "usuario": "cleo",
     "senha": "admin123",
-    "tipo": "admin",
-    "tenant_id": "artico"
+    "tipo": "admin"
   },
   {
     "nome": "WAGNER",
     "usuario": "wagner",
     "senha": "socio123",
-    "tipo": "admin",
-    "tenant_id": "artico"
+    "tipo": "admin"
   },
   {
     "nome": "Cliente Teste",
     "usuario": "cliente1",
     "senha": "1234",
-    "tipo": "cliente",
-    "tenant_id": "beta"
+    "tipo": "cliente"
   }
 ]
