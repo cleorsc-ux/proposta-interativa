@@ -1,8 +1,6 @@
-# sheets.py
-
 import streamlit as st
 import gspread
-import pandas as pd  # ← Faltando no seu código
+import pandas as pd
 from google.oauth2.service_account import Credentials
 
 from config import NOME_PLANILHA_CATALOGO, ABA_CATALOGO, ABA_PROPOSTAS
@@ -13,10 +11,11 @@ SCOPES = [
 ]
 
 def conectar_sheets():
-    credentials_dict = st.secrets["google_sheets_credentials"]
+    credentials_dict = st.secrets["google_service_account"]  # <- CORRIGIDO AQUI
     credentials = Credentials.from_service_account_info(credentials_dict, scopes=SCOPES)
     client = gspread.authorize(credentials)
     return client.open(NOME_PLANILHA_CATALOGO)
+
 def carregar_catalogo():
     planilha = conectar_sheets()
     aba = planilha.worksheet(ABA_CATALOGO)
