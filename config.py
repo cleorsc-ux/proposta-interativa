@@ -1,41 +1,27 @@
-import streamlit as st
-import gspread
-import pandas as pd
-from google.oauth2.service_account import Credentials
+# config.py
 
-from config import (
-    NOME_PLANILHA_CATALOGO,
-    ABA_CATALOGO,
-    ABA_PROPOSTAS
-)
+# Nome da empresa
+EMPRESA_NOME = "Ártico PRIME | Soluções Prediais"
 
-SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
+# Cores oficiais
+COR_PRIMARIA = "#004AAD"    # Azul institucional
+COR_SECUNDARIA = "#FFFFFF"  # Branco
+COR_TEXTO = "#000000"       # Preto
+
+# Caminho do logo (coloque o arquivo logo.png na raiz do projeto)
+LOGO_PATH = "logo.png"
+
+# Nome da planilha no Google Sheets
+NOME_PLANILHA_CATALOGO = "CATÁLOGO DE SERVIÇOS- Ártico PRIME"
+
+# Nome das abas da planilha
+ABA_CATALOGO = "CATÁLOGO_PRINCIPAL"
+ABA_PROPOSTAS = "Propostas"
+
+# Campos extras padrão da proposta
+CAMPOS_EXTRAS = [
+    "Prazo de execução",
+    "Equipe envolvida",
+    "Garantias",
+    "Observações"
 ]
-
-def conectar_sheets():
-    credentials_dict = st.secrets["google_sheets_credentials"]
-    credentials = Credentials.from_service_account_info(credentials_dict, scopes=SCOPES)
-    client = gspread.authorize(credentials)
-    return client.open(NOME_PLANILHA_CATALOGO)
-
-def carregar_catalogo():
-    planilha = conectar_sheets()
-    aba = planilha.worksheet(ABA_CATALOGO)
-    dados = aba.get_all_records()
-    df = pd.DataFrame(dados)
-    return df
-
-def salvar_proposta_em_sheets(cliente, usuario, total, itens, observacoes):
-    planilha = conectar_sheets()
-    aba = planilha.worksheet(ABA_PROPOSTAS)
-
-    valores = [
-        cliente,
-        usuario,
-        f"R$ {total:.2f}".replace(".", ","),
-        ", ".join([f"{item['servico']} (x{item['quantidade']})" for item in itens]),
-        observacoes
-    ]
-    aba.append_row(valores)
