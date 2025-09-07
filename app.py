@@ -1,102 +1,72 @@
-# ✅ streamlit_app.py — versão limpa e completa
+# app.py (renomeado de streamlit_app.py)
 
 import streamlit as st
-from auth import autenticar_usuario
-from sheets import carregar_catalogo, salvar_proposta_em_sheets
+import os
+from auth import autenticar
 from pdf import gerar_pdf
-from config import get_config_by_tenant
+from sheets import carregar_catalogo
 
-# Configura a página
+# Autenticação do usuário
+autenticar()  # Define st.session_state["nome"]
+
+# Configuração da página
 st.set_page_config(page_title="Gerador de Propostas - Ártico PRIME", layout="wide")
 
-# Autenticação com suporte a multitenancy
-tenant_id, usuario = autenticar_usuario()
-if not usuario:
-    st.stop()
+st.markdown("# 📄 Gerador de Propostas - Ártico PRIME")
+st.markdown(f"Usuário logado: **{st.session_state['nome']}**")
 
-# Botão de logout
-if st.sidebar.button("🔓 Sair"):
-    del st.session_state.usuario
-    st.experimental_rerun()
-
-# Carrega configurações da empresa (logo, nome, planilha...)
-config = get_config_by_tenant(tenant_id)
-st.sidebar.image(config['logo'], use_column_width=True)
-st.sidebar.markdown(f"**{config['nome_empresa']}**")
-
-st.markdown("# 📄 Gerador de Propostas Interativas")
-
-# 📦 Carregar catálogo de serviços
-catalogo = carregar_catalogo(config)
+# ————\U0001f4cb Catálogo Oficial de Serviços (clicável)
+servicos_selecionados = []
+st.subheader("🔢 Selecione os serviços para esta proposta")
+catalogo = carregar_catalogo()  # Carrega do Google Sheets
 categorias = catalogo["categoria"].dropna().unique()
 
-st.subheader("1️⃣ Escolha os serviços")
-carrinho = []
-
-for categoria in categorias:
-    st.markdown(f"### 🔹 {categoria}")
-    servicos_categoria = catalogo[catalogo["categoria"] == categoria]
-
-    for _, row in servicos_categoria.iterrows():
+for cat in categorias:
+    st.markdown(f"### 🔹 {cat}")
+    subset = catalogo[catalogo["categoria"] == cat]
+    for _, row in subset.iterrows():
         col1, col2 = st.columns([6, 2])
         with col1:
-            marcado = st.checkbox(f"{row['servico']} ({row['unidade']}) - R$ {row['valor_unitario']:.2f}", key=row["servico"])
+            checked = st.checkbox(f"{row['servico']} ({row['unidade']}) - R$ {row['valor_unitario']:.2f}", key=row['servico'])
         with col2:
-            if marcado:
+            if checked:
                 qtd = st.number_input(f"Qtd - {row['servico']}", min_value=1, value=1, key=f"qtd_{row['servico']}")
-                carrinho.append({
+                servicos_selecionados.append({
                     "servico": row["servico"],
                     "unidade": row["unidade"],
                     "valor_unit": row["valor_unitario"],
                     "quantidade": qtd,
-                    "total": qtd * row["valor_unitario"]
+                    "total": row["valor_unitario"] * qtd
                 })
 
-# ➕ Serviço manual extra
-st.markdown("### ➕ Adicionar serviço extra")
-nome_extra = st.text_input("Descrição do serviço extra")
-qtd_extra = st.number_input("Quantidade", min_value=1, step=1)
-valor_extra = st.number_input("Valor Unitário (R$)", min_value=0.0, format="%.2f")
-
-if nome_extra:
-    carrinho.append({
-        "servico": nome_extra,
-        "unidade": "UND",
-        "valor_unit": valor_extra,
-        "quantidade": qtd_extra,
-        "total": qtd_extra * valor_extra
-    })
-
-# 🧾 Informações do cliente
-st.subheader("2️⃣ Dados da Proposta")
-nome_cliente = st.text_input("Nome do Cliente ou Projeto")
-prazo = st.text_input("Prazo de Execução", value="30 dias")
+# ————\U0001f4c4 Dados da proposta
+st.subheader("📄 Dados da Proposta")
+cliente = st.text_input("Nome do Cliente ou Projeto", placeholder="Ex: Condomínio Ilhas Vivence")
+prazo = st.text_input("Prazo de Execução", value="7 dias úteis")
 garantias = st.text_input("Garantias", value="90 dias contra defeitos")
-obs = st.text_area("Observações", value="Esta proposta está sujeita a alterações mediante vistoria técnica.")
+observacoes = st.text_area("Observações", value="Esta proposta está sujeita a alterações conforme avaliação técnica da obra.")
 
-# ✅ Gerar proposta PDF
-if st.button("📎 Gerar Proposta em PDF"):
-    if not nome_cliente:
-        st.warning("⚠️ Informe o nome do cliente.")
-    elif not carrinho:
-        st.warning("⚠️ Selecione ao menos um serviço para gerar a proposta.")
+# ————\U0001f4c1 Gerar PDF
+if st.button("📅 Gerar Proposta em PDF"):
+    if not cliente:
+        st.warning("Preencha o nome do cliente.")
+    elif not servicos_selecionados:
+        st.warning("Selecione ao menos um serviço.")
     else:
-        total = sum(item["total"] for item in carrinho)
-
-        pdf = gerar_pdf(
-            tenant=config,
-            cliente=nome_cliente,
-            servicos=carrinho,
+        total = sum(item["total"] for item in servicos_selecionados)
+        pdf_path = gerar_pdf(
+            cliente=cliente,
+            servicos=servicos_selecionados,
             total=total,
             extras={
                 "prazo": prazo,
                 "garantias": garantias,
-                "obs": obs
+                "obs": observacoes
             },
-            usuario=usuario["nome"]
+            usuario=st.session_state["nome"]
         )
 
-        st.success("✅ Proposta gerada com sucesso!")
-        st.download_button("⬇️ Baixar PDF", data=pdf, file_name=f"proposta_{nome_cliente}.pdf", mime="application/pdf")
-
-        salvar_proposta_em_sheets(config, nome_cliente, usuario["nome"], total, carrinho, obs)
+        with open(pdf_path, "rb") as f:
+            st.success("✅ Proposta gerada com sucesso!")
+            st.download_button("⬇️ Baixar PDF", data=f, file_name=os.path.basename(pdf_path), mime="application/pdf")
+            st.info("Verifique o arquivo baixado ou envie para o cliente.")
