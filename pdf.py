@@ -1,4 +1,4 @@
-# novo_pdf.py
+# pdf.py
 from fpdf import FPDF
 from datetime import datetime
 import os
@@ -27,26 +27,23 @@ class PropostaPDF(FPDF):
         self.set_text_color(100)
         self.cell(0, 10, f'Gerado por {self.usuario_nome} em {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}', 0, 0, 'C')
 
-    def adicionar_detalhes(self, dados):
+    def adicionar_detalhes(self, cliente, extras):
         self.set_font('Arial', 'B', 12)
         self.set_fill_color(230, 230, 230)
         self.cell(0, 10, "Dados da Proposta", ln=True, fill=True)
 
         self.set_font('Arial', '', 11)
         self.cell(40, 10, "Cliente:", 0)
-        self.cell(0, 10, dados['cliente'], ln=True)
-
-        self.cell(40, 10, "Projeto:", 0)
-        self.cell(0, 10, dados['projeto'], ln=True)
+        self.cell(0, 10, cliente, ln=True)
 
         self.cell(40, 10, "Prazo de Execução:", 0)
-        self.cell(0, 10, dados['prazo'], ln=True)
+        self.cell(0, 10, extras["prazo"], ln=True)
 
         self.cell(40, 10, "Garantias:", 0)
-        self.cell(0, 10, dados['garantias'], ln=True)
+        self.cell(0, 10, extras["garantias"], ln=True)
 
         self.cell(40, 10, "Observações:", 0)
-        self.multi_cell(0, 10, dados['observacoes'])
+        self.multi_cell(0, 10, extras["obs"])
         self.ln(5)
 
     def adicionar_servicos(self, servicos):
@@ -63,50 +60,29 @@ class PropostaPDF(FPDF):
 
         self.set_font('Arial', '', 11)
         for s in servicos:
-            self.cell(80, 10, s['nome'], 1)
+            self.cell(80, 10, s['servico'], 1)
             self.cell(30, 10, s['unidade'], 1)
             self.cell(30, 10, str(s['quantidade']), 1)
-            self.cell(40, 10, f"R$ {s['subtotal']:.2f}", 1)
+            self.cell(40, 10, f"R$ {s['total']:.2f}", 1)
             self.ln()
 
     def adicionar_total(self, total):
         self.set_font('Arial', 'B', 12)
         self.cell(0, 10, f"Total Geral: R$ {total:.2f}", ln=True, align='R')
 
-
 def gerar_pdf(cliente, servicos, total, extras, usuario):
     empresa_nome = "Ártico PRIME | Soluções Prediais"
-    logotipo_path = "logo.png"  # Caminho na raiz do projeto
+    logotipo_path = "logo.png"  # Ou ajuste para o caminho correto
     os.makedirs("pdfs", exist_ok=True)
-
-    # Montar estrutura de dados
-    dados_proposta = {
-        "cliente": cliente,
-        "projeto": cliente,
-        "prazo": extras["prazo"],
-        "garantias": extras["garantias"],
-        "observacoes": extras["obs"]
-    }
-
-    servicos_formatados = [
-        {
-            "nome": s["servico"],
-            "unidade": s["unidade"],
-            "quantidade": s["quantidade"],
-            "subtotal": s["total"]
-        }
-        for s in servicos
-    ]
 
     pdf = PropostaPDF(usuario, empresa_nome, logotipo_path)
     pdf.add_page()
-    pdf.adicionar_detalhes(dados_proposta)
-    pdf.adicionar_servicos(servicos_formatados)
+    pdf.adicionar_detalhes(cliente, extras)
+    pdf.adicionar_servicos(servicos)
     pdf.adicionar_total(total)
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    filename = f"proposta_{cliente.lower().replace(' ', '_')}_{timestamp}.pdf"
-    caminho = os.path.join("pdfs", filename)
+    safe_nome = cliente.lower().replace(" ", "_").replace("/", "_")
+    caminho = f"pdfs/proposta_{safe_nome}_{timestamp}.pdf"
     pdf.output(caminho)
     return caminho
-
