@@ -74,27 +74,39 @@ class PropostaPDF(FPDF):
         self.cell(0, 10, f"Total Geral: R$ {total:.2f}", ln=True, align='R')
 
 
-def gerar_pdf(dados_proposta, usuario_nome):
+def gerar_pdf(cliente, servicos, total, extras, usuario):
     empresa_nome = "Ártico PRIME | Soluções Prediais"
-    logotipo_path = "assets/logo.png"
+    logotipo_path = "logo.png"  # Caminho na raiz do projeto
     os.makedirs("pdfs", exist_ok=True)
 
-    servicos_raw = dados_proposta['servicos'].split(", ")
-    total = dados_proposta['valor_total']
-    valor_unitario = total / len(servicos_raw)
+    # Montar estrutura de dados
+    dados_proposta = {
+        "cliente": cliente,
+        "projeto": cliente,
+        "prazo": extras["prazo"],
+        "garantias": extras["garantias"],
+        "observacoes": extras["obs"]
+    }
 
-    servicos = [
-        {"nome": nome, "unidade": "UND", "quantidade": 1, "subtotal": valor_unitario}
-        for nome in servicos_raw
+    servicos_formatados = [
+        {
+            "nome": s["servico"],
+            "unidade": s["unidade"],
+            "quantidade": s["quantidade"],
+            "subtotal": s["total"]
+        }
+        for s in servicos
     ]
 
-    pdf = PropostaPDF(usuario_nome, empresa_nome, logotipo_path)
+    pdf = PropostaPDF(usuario, empresa_nome, logotipo_path)
     pdf.add_page()
     pdf.adicionar_detalhes(dados_proposta)
-    pdf.adicionar_servicos(servicos)
+    pdf.adicionar_servicos(servicos_formatados)
     pdf.adicionar_total(total)
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    caminho = f"pdfs/proposta_{dados_proposta['cliente'].lower().replace(' ', '_')}_{timestamp}.pdf"
+    filename = f"proposta_{cliente.lower().replace(' ', '_')}_{timestamp}.pdf"
+    caminho = os.path.join("pdfs", filename)
     pdf.output(caminho)
     return caminho
+

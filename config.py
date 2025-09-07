@@ -11,10 +11,8 @@ COR_TEXTO = "#000000"       # Preto
 # Caminho do logo (coloque o arquivo logo.png na raiz do projeto)
 LOGO_PATH = "logo.png"
 
-# Nome da planilha no Google Sheets
+# Nome da planilha e abas no Google Sheets
 NOME_PLANILHA_CATALOGO = "CATÁLOGO DE SERVIÇOS- Ártico PRIME"
-
-# Nome das abas da planilha
 ABA_CATALOGO = "CATÁLOGO_PRINCIPAL"
 ABA_PROPOSTAS = "Propostas"
 

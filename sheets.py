@@ -5,7 +5,7 @@ import gspread
 import pandas as pd  # ← Faltando no seu código
 from google.oauth2.service_account import Credentials
 
-from config import NOME_PLANILHA_CATALOGO  # certifique-se de importar
+from config import NOME_PLANILHA_CATALOGO, ABA_CATALOGO, ABA_PROPOSTAS
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
