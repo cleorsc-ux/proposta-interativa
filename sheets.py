@@ -14,7 +14,6 @@ def conectar_sheets():
     credentials_dict = st.secrets["google_sheets_credentials"]
     credentials = Credentials.from_service_account_info(credentials_dict, scopes=SCOPES)
     client = gspread.authorize(credentials)
-    # Abrir diretamente pela chave da URL
     return client.open_by_key("1hr4U2rpAvU8lYu_CgIQiSXtG0TF4NbRQK-va8-e9Zqk")
 
 def carregar_catalogo():
