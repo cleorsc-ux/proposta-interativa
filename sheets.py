@@ -11,7 +11,7 @@ SCOPES = [
 ]
 
 def conectar_sheets():
-    credentials_dict = st.secrets["google_sheets_credentials"]
+    credentials_dict = st.secrets["gcp_service_account"]  # 🔧 Corrigido aqui
     credentials = Credentials.from_service_account_info(credentials_dict, scopes=SCOPES)
     client = gspread.authorize(credentials)
     return client.open_by_key("1hr4U2rpAvU8lYu_CgIQiSXtG0TF4NbRQK-va8-e9Zqk")
