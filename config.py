@@ -12,8 +12,8 @@ COR_TEXTO = "#000000"       # Preto
 LOGO_PATH = "logo.png"
 
 # Nome da planilha e abas no Google Sheets
-NOME_PLANILHA_CATALOGO = "CATÁLOGO DE SERVIÇOS - Ártico PRIME"
-ABA_CATALOGO = "CATÁLOGO_PRINCIPAL"
+NOME_PLANILHA_CATALOGO = "Catálogo de serviços - Ártico PRIME"
+ABA_CATALOGO = "Catálogo_principal"  # ← sensível a maiúsculas/minúsculas!
 ABA_PROPOSTAS = "Propostas"
 
 # Campos extras padrão da proposta
