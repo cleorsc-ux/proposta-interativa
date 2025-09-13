@@ -27,7 +27,10 @@ for cat in categorias:
     for _, row in subset.iterrows():
         col1, col2 = st.columns([6, 2])
         with col1:
-            checked = st.checkbox(f"{row['servico']} ({row['unidade']}) - R$ {row['valor_unitario']:.2f}", key=row['servico'])
+            checked = st.checkbox(
+    f"{row['serviço']} ({row['unidade']}) - R$ {row['valor_unitario']:.2f}",
+    key=row['serviço']
+)
         with col2:
             if checked:
                 qtd = st.number_input(f"Qtd - {row['servico']}", min_value=1, value=1, key=f"qtd_{row['servico']}")
