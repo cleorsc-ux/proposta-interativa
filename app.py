@@ -14,15 +14,14 @@ st.set_page_config(page_title="Gerador de Propostas - Ártico PRIME", layout="wi
 
 st.markdown("# 📄 Gerador de Propostas - Ártico PRIME")
 st.markdown(f"Usuário logado: **{st.session_state['nome']}**")
-
 # ————📋 Catálogo Oficial de Serviços (clicável)
-servicos_selecionados = []
 st.subheader("🔢 Selecione os serviços para esta proposta")
+servicos_selecionados = []
 
 # Carrega o catálogo do Google Sheets
 catalogo = carregar_catalogo()
 
-# Normaliza os nomes das colunas (remove acentos e deixa tudo minúsculo)
+# Normaliza os nomes das colunas
 catalogo.columns = catalogo.columns.str.strip().str.lower().str.normalize('NFKD')\
     .str.encode('ascii', errors='ignore').str.decode('utf-8')
 
@@ -48,6 +47,20 @@ for cat in categorias:
                     "quantidade": qtd,
                     "total": row["valor_unitario"] * qtd
                 })
+
+# ————📊 Resumo dos serviços selecionados
+if servicos_selecionados:
+    st.markdown("### 📊 Resumo dos Serviços Selecionados")
+    df_resumo = pd.DataFrame(servicos_selecionados)
+    df_resumo["valor_unit"] = df_resumo["valor_unit"].map("R$ {:,.2f}".format)
+    df_resumo["total"] = df_resumo["total"].map("R$ {:,.2f}".format)
+    st.dataframe(df_resumo[["servico", "unidade", "quantidade", "valor_unit", "total"]], use_container_width=True)
+
+    total_geral = sum(
+        float(str(x["total"]).replace("R$", "").replace(".", "").replace(",", "."))
+        for x in df_resumo.to_dict(orient="records")
+    )
+    st.markdown(f"### 💰 Total Geral: R$ {total_geral:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
 
 # ————📄 Dados da proposta
 st.subheader("📄 Dados da Proposta")
