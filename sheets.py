@@ -11,10 +11,10 @@ SCOPES = [
 ]
 
 def conectar_sheets():
-    credentials_dict = st.secrets["gcp_service_account"]
+    credentials_dict = st.secrets["google_sheets_credentials"]
     credentials = Credentials.from_service_account_info(credentials_dict, scopes=SCOPES)
     client = gspread.authorize(credentials)
-    return client.open_by_key("1hr4U2rpAvU8lYu_CgIQiSXtG0TF4NbRQK-va8-e9Zqk")
+    return client.open_by_key("1uzFYoRqTD46dQYVyh__vpf09EujVSsXLjJYS4HA27-k")
 
 def carregar_catalogo():
     planilha = conectar_sheets()
