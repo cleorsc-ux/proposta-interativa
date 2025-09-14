@@ -12,55 +12,53 @@ st.set_page_config(page_title="Gerador de Propostas - Ártico PRIME", layout="wi
 st.markdown("# 📄 Gerador de Propostas - Ártico PRIME")
 st.markdown(f"Usuário logado: **{st.session_state['nome']}**")
 
-# ——— Carrega Catálogo
-data = carregar_catalogo()
-data.columns = data.columns.str.strip().str.lower().str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-categorias = data["categoria"].dropna().unique()
+st.subheader("🧾 Catálogo Oficial de Serviços")
 
-# ——— Seleção de serviços
-st.subheader("🔢 Selecione os serviços para esta proposta")
+catalogo = carregar_catalogo()
+
+# Normaliza nomes de colunas
+catalogo.columns = catalogo.columns.str.strip().str.lower().str.normalize('NFKD')\
+    .str.encode('ascii', errors='ignore').str.decode('utf-8')
+
+categorias = catalogo["categoria"].dropna().unique()
 servicos_selecionados = []
 
 for categoria in categorias:
-    st.markdown(f"### 🔹 **{categoria.upper()}**")
-    subset = data[data["categoria"] == categoria]
+    st.markdown(f"## 🔹 {categoria}")
+    subset = catalogo[catalogo["categoria"] == categoria]
 
     for _, row in subset.iterrows():
-        servico = row["servico"] or "(Serviço sem nome)"
-        unidade = row["unidade"] or "UND"
-
-        col1, col2, col3 = st.columns([5, 2, 2])
-        with col1:
-            marcado = st.checkbox(f"{servico} ({unidade})", key=servico)
-
-        if marcado:
+        with st.container(border=True):
+            col1, col2, col3 = st.columns([6, 2, 2])
+            with col1:
+                check = st.checkbox(f"{row['servico']} ({row['unidade']})", key=row['servico'])
             with col2:
                 valor_unit = st.number_input(
-                    f"🔥 Valor unitário - {servico}",
-                    min_value=0.0,
-                    value=float(row["valor_unitario"]),
-                    step=100.0,
+                    "🔥 Valor unitário",
+                    min_value=0.00,
                     format="%.2f",
-                    key=f"valor_{servico}"
+                    step=1.00,
+                    value=row["valor_unitario"] if pd.notnull(row["valor_unitario"]) else 0.00,
+                    key=f"valor_{row['servico']}"
                 )
             with col3:
                 qtd = st.number_input(
-                    f"📦 Qtd - {servico}",
+                    "📦 Qtd",
                     min_value=1,
-                    value=1,
                     step=1,
-                    key=f"qtd_{servico}"
+                    value=1,
+                    key=f"qtd_{row['servico']}"
                 )
 
-            total = valor_unit * qtd
-
-            servicos_selecionados.append({
-                "servico": servico,
-                "unidade": unidade,
-                "valor_unit": valor_unit,
-                "quantidade": qtd,
-                "total": total
-            })
+            if check:
+                total = valor_unit * qtd
+                servicos_selecionados.append({
+                    "servico": row["servico"],
+                    "unidade": row["unidade"],
+                    "valor_unit": valor_unit,
+                    "quantidade": qtd,
+                    "total": total
+                })
 
 # ——— Tabela Resumo
 if servicos_selecionados:
