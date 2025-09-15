@@ -20,7 +20,8 @@ def autenticar():
                     st.session_state["usuario"] = usuario
                     st.session_state["tipo"] = u["tipo"]
                     st.success(f"Bem-vindo, {u['nome']}!")
-                    st.experimental_rerun()
+                    st.rerun()
+
             st.error("Usuário ou senha incorretos.")
 
     if not st.session_state["autenticado"]:
