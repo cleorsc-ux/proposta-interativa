@@ -11,8 +11,13 @@ autenticar()  # Define st.session_state["nome"], ["usuario"], ["tipo"]
 # Configuração da página
 st.set_page_config(page_title="Gerador de Propostas - Ártico PRIME", layout="wide")
 
+# Recupera os dados do usuário logado com segurança
+usuario_nome = st.session_state.get("nome", "Desconhecido")
+usuario_login = st.session_state.get("usuario", "N/A")
+usuario_tipo = st.session_state.get("tipo", "N/A")
+
 st.markdown("# 📄 Gerador de Propostas - Ártico PRIME")
-st.markdown(f"Usuário logado: **{st.session_state['nome']}** ({st.session_state['usuario']} - {st.session_state['tipo']})")
+st.markdown(f"Usuário logado: **{usuario_nome}** ({usuario_login} - {usuario_tipo})")
 
 st.subheader("🔢 Selecione os serviços para esta proposta")
 
@@ -143,9 +148,9 @@ if st.button("🗓️ Gerar Proposta em PDF"):
                 "simulacao": simulacao,
                 "validade": validade,
                 "obs": observacoes,
-                "emitido_por": f"{st.session_state['nome']} ({st.session_state['usuario']} - {st.session_state['tipo']})"
+                "emitido_por": f"{usuario_nome} ({usuario_login} - {usuario_tipo})"
             },
-            usuario=st.session_state["nome"]
+            usuario=usuario_nome
         )
 
         # Salva referência ao último PDF
