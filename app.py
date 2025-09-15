@@ -47,11 +47,37 @@ for cat in categorias:
 
     for _, row in subset.iterrows():
         with st.container(border=True):
-            st.markdown(f"**{row['servico']}** ({row['unidade']})")
-            col1, col2, col3 = st.columns([3, 2, 2])
+            # Monta descrição detalhada do serviço
+            partes = []
+            if "nome_do_servico" in row and pd.notna(row["nome_do_servico"]):
+                partes.append(str(row["nome_do_servico"]).strip())
+            if "subcategoria" in row and pd.notna(row["subcategoria"]):
+                partes.append(str(row["subcategoria"]).strip())
+
+            nome_servico = " – ".join(partes)
+
+            detalhes = []
+            if "especificacoes_tecnicas" in row and pd.notna(row["especificacoes_tecnicas"]):
+                detalhes.append(f"({row['especificacoes_tecnicas']})")
+            if "materiais_inclusos" in row and pd.notna(row["materiais_inclusos"]):
+                detalhes.append(f"Inclui: {row['materiais_inclusos']}")
+            if "observacoes" in row and pd.notna(row["observacoes"]):
+                detalhes.append(f"Obs.: {row['observacoes']}")
+
+            descricao_completa = f"**{nome_servico}**"
+            if detalhes:
+                descricao_completa += "<br>" + "<br>".join(detalhes)
+
+            if "und" in row and pd.notna(row["und"]):
+                descricao_completa += f"<br>**Unidade:** {row['und']}"
+
+            st.markdown(descricao_completa, unsafe_allow_html=True)
+
+            # --- Colunas para seleção, valor e quantidade ---
+            col1, col2, col3 = st.columns([2, 2, 2])
 
             with col1:
-                checked = st.checkbox("Incluir", key=f"check_{row['servico']}_{_}")
+                checked = st.checkbox("Incluir", key=f"check_{row['nome_do_servico']}_{_}")
 
             with col2:
                 valor_raw = row.get("valor_unitario", 0)
@@ -66,10 +92,11 @@ for cat in categorias:
                 valor_editado = st.number_input(
                     "Valor Unitário (R$)",
                     min_value=0.0,
+                    max_value=100000.0,  # limite de segurança
                     value=valor_float,
                     step=0.01,
                     format="%.2f",
-                    key=f"valor_{row['servico']}_{_}"
+                    key=f"valor_{row['nome_do_servico']}_{_}"
                 )
 
             with col3:
@@ -78,18 +105,21 @@ for cat in categorias:
                     min_value=1,
                     value=1,
                     step=1,
-                    key=f"qtd_{row['servico']}_{_}"
+                    key=f"qtd_{row['nome_do_servico']}_{_}"
                 )
 
+            # Se o serviço foi marcado, adiciona ao resumo
             if checked:
                 total = valor_editado * qtd
                 servicos_selecionados.append({
-                    "servico": row["servico"],
-                    "unidade": row["unidade"],
+                    "servico": nome_servico,
+                    "unidade": row.get("und", ""),
                     "valor_unit": valor_editado,
                     "quantidade": qtd,
-                    "total": total
+                    "total": total,
+                    "detalhes": " | ".join(detalhes) if detalhes else ""
                 })
+
 
 # RESUMO DOS SERVIÇOS SELECIONADOS
 if servicos_selecionados:
