@@ -6,13 +6,13 @@ from pdf import gerar_pdf
 from sheets import carregar_catalogo
 
 # Autenticação do usuário
-autenticar()  # Define st.session_state["nome"]
+autenticar()  # Define st.session_state["nome"], ["usuario"], ["tipo"]
 
 # Configuração da página
 st.set_page_config(page_title="Gerador de Propostas - Ártico PRIME", layout="wide")
 
 st.markdown("# 📄 Gerador de Propostas - Ártico PRIME")
-st.markdown(f"Usuário logado: **{st.session_state['nome']}**")
+st.markdown(f"Usuário logado: **{st.session_state['nome']}** ({st.session_state['usuario']} - {st.session_state['tipo']})")
 
 st.subheader("🔢 Selecione os serviços para esta proposta")
 
@@ -49,7 +49,6 @@ for cat in categorias:
                 checked = st.checkbox("Incluir", key=f"check_{row['servico']}_{_}")
 
             with col2:
-                # Garantir que o valor seja float válido
                 valor_raw = row.get("valor_unitario", 0)
                 try:
                     valor_float = float(valor_raw)
@@ -114,10 +113,15 @@ if servicos_selecionados:
 
 # DADOS DA PROPOSTA
 st.subheader("📄 Dados da Proposta")
-cliente = st.text_input("Nome do Cliente ou Projeto", placeholder="Ex: Condomínio Ilhas Vivence")
+cliente = st.text_input("Cliente / Projeto", placeholder="Ex: Condomínio Ilhas Vivence")
+objeto = st.text_area("Objeto da Proposta", placeholder="Ex: Execução de pintura de fachada / piso intertravado")
 prazo = st.text_input("Prazo de Execução", value="7 dias úteis")
 garantias = st.text_input("Garantias", value="90 dias contra defeitos")
-observacoes = st.text_area("Observações", value="Esta proposta está sujeita a alterações conforme avaliação técnica da obra.")
+forma_pagamento = st.text_input("Forma de Pagamento", placeholder="Ex: Entrada + 10 parcelas mensais")
+simulacao = st.text_area("Simulação de Financiamento", placeholder="Detalhe aqui a simulação se houver")
+validade = st.text_input("Validade da Proposta", value="15 dias")
+
+observacoes = st.text_area("Condições Gerais / Observações", value="Esta proposta está sujeita a alterações conforme avaliação técnica da obra.")
 
 # GERAR PDF
 if st.button("🗓️ Gerar Proposta em PDF"):
@@ -132,12 +136,20 @@ if st.button("🗓️ Gerar Proposta em PDF"):
             servicos=servicos_selecionados,
             total=total,
             extras={
+                "objeto": objeto,
                 "prazo": prazo,
                 "garantias": garantias,
-                "obs": observacoes
+                "forma_pagamento": forma_pagamento,
+                "simulacao": simulacao,
+                "validade": validade,
+                "obs": observacoes,
+                "emitido_por": f"{st.session_state['nome']} ({st.session_state['usuario']} - {st.session_state['tipo']})"
             },
             usuario=st.session_state["nome"]
         )
+
+        # Salva referência ao último PDF
+        st.session_state['ultimo_pdf'] = pdf_path
 
         with open(pdf_path, "rb") as f:
             st.success("✅ Proposta gerada com sucesso!")
@@ -148,3 +160,19 @@ if st.button("🗓️ Gerar Proposta em PDF"):
                 mime="application/pdf"
             )
             st.info("Verifique o arquivo baixado ou envie para o cliente.")
+
+# ➕ Botão Nova Proposta
+if st.button("➕ Nova Proposta"):
+    for key in list(st.session_state.keys()):
+        if key.startswith("check_") or key.startswith("valor_") or key.startswith("qtd_"):
+            del st.session_state[key]
+    st.experimental_rerun()
+
+# 🗑️ Botão Excluir Última Proposta
+if st.button("🗑️ Excluir Última Proposta"):
+    if 'ultimo_pdf' in st.session_state and os.path.exists(st.session_state['ultimo_pdf']):
+        os.remove(st.session_state['ultimo_pdf'])
+        st.success("🗑️ Proposta excluída com sucesso.")
+        del st.session_state['ultimo_pdf']
+    else:
+        st.warning("Nenhuma proposta encontrada para excluir.")
